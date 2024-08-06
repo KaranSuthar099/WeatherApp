@@ -65,6 +65,8 @@ class WeatherDayTime {
     Duration dayDuration = _dayDuration(weather);
 
     double percentage = (dayConsumedDuration.inHours / dayDuration.inHours);
+    
+    if ( percentage > 1 ) return 0;
 
     return percentage;
   }

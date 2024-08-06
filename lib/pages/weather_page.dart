@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:weather_app/models/weather_model.dart';
 import 'package:weather_app/service/weather_service.dart';
+import 'package:weather_app/utils/get_random_emoji.dart';
 import 'package:weather_app/utils/weather_day_time.dart';
 import 'package:weather_app/utils/wind_direction_convertor.dart';
 
@@ -47,7 +48,7 @@ class _WeatherPageState extends State<WeatherPage> {
                 snapshot.hasData) {
               return WeatherDisplay(weather: snapshot.data);
             } else {
-              return const CircularProgressIndicator();
+              return const Center(child: CircularProgressIndicator());
             }
           },
         ),
@@ -357,48 +358,78 @@ class MainTemperatureWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       color: Theme.of(context).colorScheme.primaryContainer,
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              "Feels Like",
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onPrimaryContainer,
-                fontSize: Theme.of(context).textTheme.headlineSmall!.fontSize,
-              ),
-            ),
-            Divider(
-              color: Theme.of(context).colorScheme.onPrimaryContainer,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Image.network(
-                  "https://openweathermap.org/img/wn/${_weather!.weatherIcon}@2x.png",
-                  fit: BoxFit.contain,
-                ),
-                Text(
-                  "${(_weather.mainFeelsLike - 273.15).round()} °C",
-                  style: TextStyle(
-                    fontSize:
-                        Theme.of(context).textTheme.displayLarge!.fontSize,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        splashColor: Theme.of(context).colorScheme.tertiary,
+        onTap: () {
+          SnackBar snackbar = SnackBar(
+            content: Center(
+              child: Card(
+                color: Colors.grey[400],
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Text(
+                    GetRandomEmoji.getRandomEmoji(),
+                    style: const TextStyle(fontSize : 32)
                   ),
                 ),
-              ],
+              ),
             ),
-            Divider(
-              color: Theme.of(context).colorScheme.onPrimaryContainer,
+            backgroundColor: Colors.transparent,
+            duration: const Duration(milliseconds: 500),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
             ),
-            Text(_weather.weatherDescription,
+            elevation: 0,
+
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackbar);
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                "Feels Like",
                 style: TextStyle(
-                    fontSize: Theme.of(context).textTheme.titleMedium!.fontSize,
-                    color: Theme.of(context).colorScheme.onPrimaryContainer))
-          ],
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  fontSize: Theme.of(context).textTheme.headlineSmall!.fontSize,
+                ),
+              ),
+              Divider(
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Image.network(
+                    "https://openweathermap.org/img/wn/${_weather!.weatherIcon}@2x.png",
+                    fit: BoxFit.contain,
+                  ),
+                  Text(
+                    "${(_weather.mainFeelsLike - 273.15).round()} °C",
+                    style: TextStyle(
+                      fontSize:
+                          Theme.of(context).textTheme.displayLarge!.fontSize,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    ),
+                  ),
+                ],
+              ),
+              Divider(
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
+              ),
+              Text(_weather.weatherDescription,
+                  style: TextStyle(
+                      fontSize:
+                          Theme.of(context).textTheme.titleMedium!.fontSize,
+                      color: Theme.of(context).colorScheme.onPrimaryContainer))
+            ],
+          ),
         ),
       ),
     );
